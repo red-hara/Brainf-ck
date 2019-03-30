@@ -15,6 +15,7 @@ Arduboy Brainf#ck interpreter.
 
 ### Yellow mode - execution
 `A+B` - abort execution  
+`RIGHT` - fast-forward  
 
 ### Red mode - user input
 `UP/DOWN` - select input value  
