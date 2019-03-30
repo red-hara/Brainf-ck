@@ -3,6 +3,7 @@
 
 Arduboy2 arduboy;
 
+#define LED_POWER 16
 #define LINE_WIDTH 20
 #define OFFSET 4
 #define DATA_SIZE 256
@@ -241,50 +242,56 @@ void read() {
 }
 
 void executeprog() {
-  arduboy.setRGBled(16, 16, 0);
+  arduboy.setRGBled(LED_POWER, LED_POWER, 0);
+  byte counter = 1;
   if (arduboy.pressed(A_BUTTON | B_BUTTON)) {
     mode = EDIT;
   }
-  switch (prog[progp]) {
-    case '>':
-      datap ++;
-      break;
-    case '<':
-      datap --;
-      break;
-    case '+':
-      data[datap] ++;
-      break;
-    case '-':
-      data[datap] --;
-      break;
-    case '.':
-      print();
-      break;
-    case ',':
-      mode = TYPE;
-      break;
-    case '[':
-      if (data[datap] == 0) {
-        jumpForward();
-      }
-      break;
-    case ']':
-      if (data[datap] != 0) {
-        jumpBack();
-      }
-      break;
+  if (arduboy.pressed(RIGHT_BUTTON)) {
+    counter = 8;
   }
-  progp ++;
-  if (prog[progp] == 0) {
-    mode = EDIT;
+  for (byte b = 0; b < counter && mode == RUN; b++) {
+    switch (prog[progp]) {
+      case '>':
+        datap ++;
+        break;
+      case '<':
+        datap --;
+        break;
+      case '+':
+        data[datap] ++;
+        break;
+      case '-':
+        data[datap] --;
+        break;
+      case '.':
+        print();
+        break;
+      case ',':
+        mode = TYPE;
+        break;
+      case '[':
+        if (data[datap] == 0) {
+          jumpForward();
+        }
+        break;
+      case ']':
+        if (data[datap] != 0) {
+          jumpBack();
+        }
+        break;
+    }
+    progp ++;
+    if (prog[progp] == 0) {
+      mode = EDIT;
+    }
   }
 }
 
 void edit() {
   switch (editmode) {
     case MOVE:
-      arduboy.setRGBled(0, 0, 16);
+      arduboy.setRGBled(0, 0, LED_POWER);
       if (arduboy.justPressed(A_BUTTON)) {
         editmode = LETTER;
       }
@@ -316,7 +323,7 @@ void edit() {
       }
       break;
     case LETTER:
-      arduboy.setRGBled(16, 16, 16);
+      arduboy.setRGBled(LED_POWER, LED_POWER, LED_POWER);
       if (arduboy.justPressed(A_BUTTON)) {
         editmode = MOVE;
       }
@@ -459,7 +466,7 @@ void insert() {
 }
 
 void type() {
-  arduboy.setRGBled(16, 0, 0);
+  arduboy.setRGBled(LED_POWER, 0, 0);
   if (input[inpup] == 0) {
     input[inpup] = ' ';
   }
